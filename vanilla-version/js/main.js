@@ -34,8 +34,8 @@ const barLengthScale = d3.scaleLinear()
     .domain([ 0, Math.max(...topRockAlbums.map(({ eq_albums }) => eq_albums)) * 1.1 ])
     .range([0, BARS_CHART_WIDTH - BARS_CHART_MARGIN_LEFT - BARS_CHART_MARGIN_RIGHT]);
 
-const BAR_HEIGHT = 22;
-const BAR_SPACING = 4;
+const BAR_HEIGHT = 20;
+const BAR_SPACING = 5;
 const BAR_COLOR = '#a6d854';
 
 barsChart.selectAll('rect')
@@ -44,7 +44,7 @@ barsChart.selectAll('rect')
         .attr('width', ({ eq_albums }) => barLengthScale(eq_albums))
         .attr('height', BAR_HEIGHT)
         .attr('x', BARS_CHART_MARGIN_LEFT + 1)
-        .attr('y', (item, i) => (BAR_HEIGHT + BAR_SPACING) * i)
+        .attr('y', (item, i) => BAR_SPACING + (BAR_HEIGHT + BAR_SPACING) * i)
         .attr('fill', BAR_COLOR);
 
 barsChart.selectAll('.label-value')
