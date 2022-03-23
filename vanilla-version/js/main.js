@@ -50,7 +50,16 @@ barsChart.selectAll('rect')
 barsChart.selectAll('.label-value')
     .data(topRockAlbums)
     .join('text')
-    .attr('class', 'label label-value')
-    .attr('x', ({ eq_albums }) => BARS_CHART_MARGIN_LEFT + barLengthScale(eq_albums) + 10)
-    .attr('y', (d, i) => (BAR_SPACING + (BAR_HEIGHT + BAR_SPACING) * i) + 14)
-    .text(({ eq_albums }) => eq_albums / 1000000 + 'M');
+        .attr('class', 'label label-value')
+        .attr('x', ({ eq_albums }) => BARS_CHART_MARGIN_LEFT + barLengthScale(eq_albums) + 10)
+        .attr('y', (d, i) => (BAR_SPACING + (BAR_HEIGHT + BAR_SPACING) * i) + 14)
+        .text(({ eq_albums }) => eq_albums / 1000000 + 'M');
+
+barsChart.selectAll('.label-album-title')
+    .data(topRockAlbums)
+    .join('text')
+        .attr('class', 'label label-album-title')
+        .attr('x', BARS_CHART_MARGIN_LEFT - 8)
+        .attr('y', (d, i) => (BAR_SPACING + (BAR_HEIGHT + BAR_SPACING) * i) + 14)
+        .attr('text-anchor', 'end')
+        .text(({ title }) => title);
