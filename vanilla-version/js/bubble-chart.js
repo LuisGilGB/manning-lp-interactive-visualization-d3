@@ -100,7 +100,8 @@
         legendList
             .selectAll('ul')
             .data(data)
-            .join('ul');
+            .join('ul')
+            .text(d => d.artist);
     }
 
     const data = await d3.csv('./data.csv');
