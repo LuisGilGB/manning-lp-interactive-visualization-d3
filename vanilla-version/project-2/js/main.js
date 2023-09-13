@@ -5,6 +5,13 @@ const padding = 1; // Vertical space between the bars of the histogram
 const barsColor = 'steelblue';
 
 // Load data here
+d3.csv('data/pay_by_gender_tennis.csv').then(data => {
+  console.log(data);
+  createHistogram(data);
+})
+.catch(error => {
+  console.error(error);
+});
 
 
 // Create Histogram
