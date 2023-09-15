@@ -77,16 +77,28 @@ const createHistogram = (earnings) => {
     .y(bin => yScale(bin.x0) - (yScale(bin.x0) - yScale(bin.x1)) / 2)
     .curve(d3.curveCatmullRom);
 
-  console.log(bins);
   const zeroPoint = { length: 0, x0: 0, x1: 0 };
   const maxPoint = { length: 0, x0: bins.at(-1).x1, x1: bins.at(-1).x1 };
+  const expandedBins = [zeroPoint, ...bins, maxPoint];
 
   histogram
     .append('path')
-    .attr('d', curveFactory([zeroPoint, ...bins, maxPoint]))
+    .attr('d', curveFactory(expandedBins))
     .attr('fill', 'none')
     .attr('stroke', 'magenta')
     .attr('stroke-width', 2);
+
+  const areaFactory = d3.area()
+    .x0(() => xScale(0))
+    .x1(bin => xScale(bin.length))
+    .y(bin => yScale(bin.x0) - (yScale(bin.x0) - yScale(bin.x1)) / 2)
+    .curve(d3.curveCatmullRom);
+
+  histogram
+    .append('path')
+    .attr('d', areaFactory(expandedBins))
+    .attr('fill', 'yellow')
+    .attr('fill-opacity', 0.5);
 };
 
 // Create Split Violin Plot
