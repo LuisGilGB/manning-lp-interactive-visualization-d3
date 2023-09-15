@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Interactive Data Visualization with D3.js - Project 2</title>
+	<link rel="stylesheet" type="text/css" href="css/grid.css">
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+</head>
+<body>
+	<div class="container">
+		<h1>Exploring the Tennis pays in 2019</h1>
+		<div class="row">
+			<div class="col-8">
+				<p class="intro">Vamos Rafa. Vamos Rafa, vamos Rafa, vamos Rafa. Don Rafael Nadal Parera. Don Carlos Alcaraz Garfia. Ya sabemos qué es lo que tiene Rafa que no cabe ni en la Giralda #VamosRafa</p>
+			</div>
+		</div>
+		<div id="viz"></div>
+		<div class="tooltip">
+			<div class="name"></div>
+			<div class="home"></div>
+			<div class="total-earnings-section">Total prize money: <span class="total-earnings"></span></div>
+		</div>
+
+		<div class="source">
+			<div class="label">Sources:</div>
+			<ul>
+				<li><a href="https://www.wtatennis.com/rankings/singles">WTA Tour - Singles Rankings</a> Top Women tennis players on 2019-12-28</li>
+				<li><a href="https://www.atptour.com/en/rankings/singles?rankDate=2019-12-30&rankRange=0-100">ATP Tour - Singles Rankings</a> Top Men tennis players on 2019-12-30</li>
+				<li><a href="https://www.espn.com/">ESPN</a> Prize money of each tennis player for the year 2019</li>
+			</ul>
+		</div>
+
+		<div class="note">Note: The layout of this visualization is inspired by the Observable notebook <a href="https://observablehq.com/@juliobguedes/hollywood-age-gaps">Hollywood Age Gaps</a>, by <a href="https://juliobguedes.dev/">Júlio Guedes</a></div>
+	</div>
+	
+
+	<!-- Add Scripts Here -->
+	<script src="https://d3js.org/d3.v7.min.js"></script>
+	<script src="js/main.js"></script>
+</body>
+</html>
