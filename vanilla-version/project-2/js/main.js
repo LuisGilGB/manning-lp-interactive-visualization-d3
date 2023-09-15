@@ -38,6 +38,27 @@ const createHistogram = (earnings) => {
     .range([margin.left, width - margin.right])
     .nice();
   console.log(xScale.domain(), xScale.range());
+  const yScale = d3.scaleLinear()
+    .domain([0, bins.at(-1).x1])
+    .range([height - margin.bottom, margin.top]);
+
+  d3.select('.histogram')
+    .append('text')
+    .attr('x', width / 2)
+    .attr('y', margin.top / 2)
+    .attr('text-anchor', 'middle')
+    .attr('class', 'title')
+    .text('Earnings of the top tennis players in 2019 (USD)');
+
+  d3.select('.histogram')
+    .append('g')
+    .attr('transform', `translate(${margin.left}, 0)`)
+    .call(d3.axisLeft(yScale).ticks(bins.length).tickFormat(d3.format('.2s')));
+
+  d3.select('.histogram')
+    .append('g')
+    .attr('transform', `translate(0, ${height - margin.bottom})`)
+    .call(d3.axisBottom(xScale));
 };
 
 // Create Split Violin Plot
