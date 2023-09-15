@@ -1,7 +1,7 @@
 const margin = {top: 45, right: 30, bottom: 50, left: 80};
 const width = 600; // Total width of the SVG parent
 const height = 600; // Total height of the SVG parent
-const padding = 1; // Vertical space between the bars of the histogram
+const barsGap = 1; // Vertical space between the bars of the histogram
 const barsColor = 'steelblue';
 
 // Load data here
@@ -30,8 +30,6 @@ const createHistogram = (earnings) => {
     .attr('height', height)
     .attr('viewBox', `0 0 ${width} ${height}`)
     .attr('class', 'histogram')
-    .selectAll('rect')
-    .data(bins)
 
   const xScale = d3.scaleLinear()
     .domain([0, d3.max(bins.map(bin => bin.length))])
@@ -53,12 +51,27 @@ const createHistogram = (earnings) => {
   d3.select('.histogram')
     .append('g')
     .attr('transform', `translate(${margin.left}, 0)`)
-    .call(d3.axisLeft(yScale).ticks(bins.length).tickFormat(d3.format('.2s')));
+    .call(d3
+      .axisLeft(yScale)
+      .ticks(bins.length)
+      .tickFormat(d3.format('.2s'))
+    );
 
   d3.select('.histogram')
     .append('g')
     .attr('transform', `translate(0, ${height - margin.bottom})`)
     .call(d3.axisBottom(xScale));
+
+  d3.select('.histogram')
+    .selectAll('rect')
+    .data(bins)
+    .join('rect')
+    .attr('x', margin.left)
+    .attr('y', bin => yScale(bin.x1))
+    .attr('width', bin => xScale(bin.length) - margin.left)
+    .attr('height', bin => yScale(bin.x0) - yScale(bin.x1) - barsGap)
+    .attr('fill', barsColor);
+
 };
 
 // Create Split Violin Plot
