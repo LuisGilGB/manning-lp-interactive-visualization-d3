@@ -5,10 +5,15 @@ const barsGap = 1; // Vertical space between the bars of the histogram
 const barsColor = 'steelblue';
 
 // Load data here
-d3.csv('data/pay_by_gender_tennis.csv').then(data => {
-  console.log(data);
-  const earnings = data.map(item => parseInt(item.earnings_USD_2019));
-  createHistogram(earnings);
+d3.csv('data/pay_by_gender_tennis.csv').then(rawData => {
+  console.log(rawData);
+  const data = rawData.map(item => ({
+    ...item,
+    earnings_USD_2019: parseInt(item.earnings_USD_2019),
+  }));
+  //const earnings = data.map(item => item.earnings_USD_2019);
+  //createHistogram(earnings);
+  createViolin(data);
 })
   .catch(error => {
     console.error(error);
@@ -102,6 +107,27 @@ const createHistogram = (earnings) => {
 };
 
 // Create Split Violin Plot
-const createViolin = () => {
+const createViolin = (data) => {
+  console.log(data)
+  const menData = [];
+  const womenData = [];
 
+  data.forEach(item => {
+    if (item.gender === 'men') {
+      menData.push(item);
+    } else {
+      womenData.push(item);
+    }
+  });
+
+  const menEarnings = menData.map(item => item.earnings_USD_2019);
+  const womenEarnings = womenData.map(item => item.earnings_USD_2019);
+
+  const menMax = Math.ceil(d3.max(menEarnings) / 1_000_000);
+  const womenMax = Math.ceil(d3.max(womenEarnings) / 1_000_000);
+
+  const menBins = d3.bin().thresholds(menMax)(menData.map(item => item.earnings_USD_2019));
+  const womenBins = d3.bin().thresholds(womenMax)(womenData.map(item => item.earnings_USD_2019));
+  console.log(menBins);
+  console.log(womenBins);
 };
