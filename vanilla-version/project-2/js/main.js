@@ -130,4 +130,76 @@ const createViolin = (data) => {
   const womenBins = d3.bin().thresholds(womenMax)(womenData.map(item => item.earnings_USD_2019));
   console.log(menBins);
   console.log(womenBins);
+
+  const maxX = d3.max([ d3.max(menBins.map(bin => bin.length)), d3.max(womenBins.map(bin => bin.length)) ]);
+
+  const xScale = d3.scaleLinear()
+    .domain([ 0, maxX ])
+    .range([ margin.left, width/2 ])
+    .nice();
+
+  const maxY = d3.max([ menBins.at(-1).x1, womenBins.at(-1).x1 ]);
+  const yScale = d3.scaleLinear()
+    .domain([ 0, maxY ])
+    .range([ height - margin.bottom, margin.top ]);
+
+  const violin = d3.select('#viz')
+    .append('svg')
+    .attr('width', width)
+    .attr('height', height)
+    .attr('viewBox', `0 0 ${width} ${height}`)
+    .attr('class', 'violin');
+
+  violin
+    .append('text')
+    .attr('x', width / 2)
+    .attr('y', margin.top / 2)
+    .attr('text-anchor', 'middle')
+    .attr('class', 'title')
+    .text('Earnings of the top tennis players in 2019 (USD)');
+
+  violin
+    .append('g')
+    .attr('transform', `translate(${margin.left}, 0)`)
+    .call(d3
+      .axisLeft(yScale)
+      .ticks(menBins.length)
+      .tickFormat(d3.format('.2s')),
+    );
+
+  violin
+    .append('line')
+    .attr('x1', margin.left)
+    .attr('y1', height - margin.bottom)
+    .attr('x2', width - margin.right)
+    .attr('y2', height - margin.bottom)
+    .attr('stroke', 'black')
+    .attr('stroke-width', 1);
+
+  const areaFactory = d3.area()
+    .x0(() => xScale(0))
+    .x1(bin => xScale(bin.length))
+    .y(bin => yScale(bin.x0) - (yScale(bin.x0) - yScale(bin.x1)) / 2)
+    .curve(d3.curveCatmullRom);
+
+  const expandBins = (bins) => {
+    const zeroPoint = { length: 0, x0: 0, x1: 0 };
+    const maxPoint = { length: 0, x0: bins.at(-1).x1, x1: bins.at(-1).x1 };
+    return [zeroPoint, ...bins, maxPoint];
+  }
+
+  violin
+    .append('path')
+    .attr('d', areaFactory(expandBins(menBins)))
+    .attr('fill', '#F2C53D')
+    .attr('fill-opacity', 0.8)
+    .attr('stroke', 'none')
+    .attr('transform', `translate(${width/2 - margin.left}, 0)`);
+
+  violin
+    .append('path')
+    .attr('d', areaFactory(expandBins(womenBins)))
+    .attr('fill', '#A6BF4B')
+    .attr('fill-opacity', 0.8)
+    .attr('transform', `scale(-1, 1) translate(${-width/2 - margin.left}, 0)`);
 };
