@@ -212,17 +212,17 @@ const createViolin = (data) => {
     .force('forceY', d3.forceY(item => yScale(item.earnings_USD_2019)).strength(10))
     .force('collide', d3.forceCollide(circlesRadius + circlesPadding))
     .force('axis', () => {
-      data.forEach(d => {
+      data.forEach(item => {
         // If man and the circle's x position is on the left side of the violin
-        if (d.gender === 'men' && d.x < violinSymmetryAxisPosition + circlesRadius) {
+        if (item.gender === 'men' && item.x < violinSymmetryAxisPosition + circlesRadius) {
           // Increase velocity toward the right
-          d.vx += 0.004 * d.x;
+          item.vx += 0.004 * item.x;
         }
 
         // If woman and the circle's x position is on the right side of the violin
-        if (d.gender === 'women' && d.x > violinSymmetryAxisPosition - circlesRadius) {
+        if (item.gender === 'women' && item.x > violinSymmetryAxisPosition - circlesRadius) {
           // Increase velocity toward the left
-          d.vx -= 0.004 * d.x;
+          item.vx -= 0.004 * item.x;
         }
       })
     })
@@ -239,6 +239,8 @@ const createViolin = (data) => {
     .domain(['men', 'women'])
     .range(["#BF9B30", "#718233"]);
 
+  const tooltip = d3.select('div.tooltip');
+
   circlesGroup
     .selectAll('circle')
     .data(data)
@@ -250,4 +252,19 @@ const createViolin = (data) => {
     .style('stroke', item => circleColorsScale(item.gender))
     .style('fill', item => circleColorsScale(item.gender))
     .style('fill-opacity', 0.6);
+
+  circlesGroup
+    .selectAll('circle')
+    .on('mouseover', (event, item) => {
+      tooltip.select('.name').text(item.name)
+      tooltip.select('.home').text(item.country);
+      tooltip.select('.total-earnings').text(d3.format('.3s')(item.earnings_USD_2019));
+      tooltip
+        .style('top', `${event.pageY + 10}px`)
+        .style('left', `${event.pageX + 10}px`)
+        .classed('visible', true);
+    })
+    .on('mouseout', () => {
+      tooltip.classed('visible', false);
+    });
 };
