@@ -3,6 +3,8 @@ const width = 600; // Total width of the SVG parent
 const height = 600; // Total height of the SVG parent
 const barsGap = 1; // Vertical space between the bars of the histogram
 const barsColor = 'steelblue';
+const circlesRadius = 2.5;
+const circlesPadding = 0.7;
 
 // Load data here
 d3.csv('data/pay_by_gender_tennis.csv').then(rawData => {
@@ -202,4 +204,11 @@ const createViolin = (data) => {
     .attr('fill', '#A6BF4B')
     .attr('fill-opacity', 0.8)
     .attr('transform', `scale(-1, 1) translate(${-width/2 - margin.left}, 0)`);
+
+  const forceSimulation = d3.forceSimulation(data)
+    .force('forceX', d3.forceX(width/2).strength(0.1))
+    .force('forceY', d3.forceY(item => yScale(item.earnings_USD_2019)).strength(10))
+    .force('collide', d3.forceCollide(circlesRadius + circlesPadding))
+    .stop()
+    .tick(300);
 };
