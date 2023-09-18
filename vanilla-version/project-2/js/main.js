@@ -190,10 +190,14 @@ const createViolin = (data) => {
     return [zeroPoint, ...bins, maxPoint];
   }
 
+  const areaColorsScale = d3.scaleOrdinal()
+    .domain([ 'men', 'women' ])
+    .range([ '#F2C53D', '#A6BF4B' ]);
+
   violin
     .append('path')
     .attr('d', areaFactory(expandBins(menBins)))
-    .attr('fill', '#F2C53D')
+    .attr('fill', areaColorsScale('men'))
     .attr('fill-opacity', 0.8)
     .attr('stroke', 'none')
     .attr('transform', `translate(${width/2 - margin.left}, 0)`);
@@ -201,7 +205,7 @@ const createViolin = (data) => {
   violin
     .append('path')
     .attr('d', areaFactory(expandBins(womenBins)))
-    .attr('fill', '#A6BF4B')
+    .attr('fill', areaColorsScale('women'))
     .attr('fill-opacity', 0.8)
     .attr('transform', `scale(-1, 1) translate(${-width/2 - margin.left}, 0)`);
 
@@ -267,4 +271,48 @@ const createViolin = (data) => {
     .on('mouseout', () => {
       tooltip.classed('visible', false);
     });
+
+  const legendOffset = 30;
+  const rectWidth = 40;
+  const rectHeight = 20;
+  const horizontalGap = 12;
+  const verticalGap = 8;
+
+  const legend = d3.select('.violin')
+    .append('g')
+    .attr('transform', `translate(${margin.left + legendOffset}, ${margin.top + legendOffset})`)
+    .attr('class', 'legend');
+
+  legend
+    .append('rect')
+    .attr('x', 0)
+    .attr('y', 0)
+    .attr('width', rectWidth)
+    .attr('height', rectHeight)
+    .attr('fill', areaColorsScale('women'));
+
+  legend
+    .append('text')
+    .attr('x', rectWidth + horizontalGap)
+    .attr('y', rectHeight / 2)
+    .style('font-size', '16px')
+    .attr('alignment-baseline', 'middle')
+    .text('Women');
+
+  legend
+    .append('rect')
+    .attr('x', 0)
+    .attr('y', rectHeight + verticalGap)
+    .attr('width', rectWidth)
+    .attr('height', rectHeight)
+    .attr('fill', areaColorsScale('men'));
+
+  legend
+    .append('text')
+    .attr('x', rectWidth + horizontalGap)
+    .attr('y', 1.6 * rectHeight + verticalGap)
+    .style('font-size', '16px')
+    .attr('alignment-baseline', 'middle')
+    .text('Men');
+
 };
