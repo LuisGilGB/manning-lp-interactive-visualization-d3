@@ -205,10 +205,49 @@ const createViolin = (data) => {
     .attr('fill-opacity', 0.8)
     .attr('transform', `scale(-1, 1) translate(${-width/2 - margin.left}, 0)`);
 
+  const violinSymmetryAxisPosition = width / 2;
+
   const forceSimulation = d3.forceSimulation(data)
-    .force('forceX', d3.forceX(width/2).strength(0.1))
+    .force('forceX', d3.forceX(violinSymmetryAxisPosition).strength(0.1))
     .force('forceY', d3.forceY(item => yScale(item.earnings_USD_2019)).strength(10))
     .force('collide', d3.forceCollide(circlesRadius + circlesPadding))
+    .force('axis', () => {
+      data.forEach(d => {
+        // If man and the circle's x position is on the left side of the violin
+        if (d.gender === 'men' && d.x < violinSymmetryAxisPosition + circlesRadius) {
+          // Increase velocity toward the right
+          d.vx += 0.004 * d.x;
+        }
+
+        // If woman and the circle's x position is on the right side of the violin
+        if (d.gender === 'women' && d.x > violinSymmetryAxisPosition - circlesRadius) {
+          // Increase velocity toward the left
+          d.vx -= 0.004 * d.x;
+        }
+      })
+    })
     .stop()
-    .tick(300);
+    .tick(200);
+
+  const circlesGroup = d3.select('.violin')
+    .append('g')
+    .attr('class', 'circles-group')
+    .attr('width', width)
+    .attr('height', height);
+
+  const circleColorsScale = d3.scaleOrdinal()
+    .domain(['men', 'women'])
+    .range(["#BF9B30", "#718233"]);
+
+  circlesGroup
+    .selectAll('circle')
+    .data(data)
+    .enter()
+    .append('circle')
+    .attr('cx', item => item.x)
+    .attr('cy', item => item.y)
+    .attr('r', circlesRadius)
+    .style('stroke', item => circleColorsScale(item.gender))
+    .style('fill', item => circleColorsScale(item.gender))
+    .style('fill-opacity', 0.6);
 };
