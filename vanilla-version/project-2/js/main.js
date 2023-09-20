@@ -200,18 +200,21 @@ const createViolin = (data) => {
     .attr('fill', areaColorsScale('men'))
     .attr('fill-opacity', 0.8)
     .attr('stroke', 'none')
-    .attr('transform', `translate(${width/2 - margin.left}, 0)`);
+    .attr('transform', `translate(${width/2 - margin.left}, 0)`)
+    .attr('filter', 'url(#violin-glow)');
 
   violin
     .append('path')
     .attr('d', areaFactory(expandBins(womenBins)))
     .attr('fill', areaColorsScale('women'))
+    .attr('stroke', 'none')
     .attr('fill-opacity', 0.8)
-    .attr('transform', `scale(-1, 1) translate(${-width/2 - margin.left}, 0)`);
+    .attr('transform', `scale(-1, 1) translate(${-width/2 - margin.left}, 0)`)
+    .attr('filter', 'url(#violin-glow)');
 
   const violinSymmetryAxisPosition = width / 2;
 
-  const forceSimulation = d3.forceSimulation(data)
+  d3.forceSimulation(data)
     .force('forceX', d3.forceX(violinSymmetryAxisPosition).strength(0.1))
     .force('forceY', d3.forceY(item => yScale(item.earnings_USD_2019)).strength(10))
     .force('collide', d3.forceCollide(circlesRadius + circlesPadding))
@@ -315,4 +318,19 @@ const createViolin = (data) => {
     .attr('alignment-baseline', 'middle')
     .text('Men');
 
+  const defs = violin.append('defs');
+
+  const filter = defs.append('filter')
+    .attr('id', 'violin-glow');
+
+  filter.append('feGaussianBlur')
+    .attr('stdDeviation', '3.5')
+    .attr('result', 'coloredBlur');
+
+  const feMerge = filter.append('feMerge');
+
+  feMerge.append('feMergeNode')
+    .attr('in', 'coloredBlur');
+  feMerge.append('feMergeNode')
+    .attr('in', 'SourceGraphic');
 };
