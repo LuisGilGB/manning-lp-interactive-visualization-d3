@@ -3,8 +3,8 @@ const width = 600; // Total width of the SVG parent
 const height = 600; // Total height of the SVG parent
 const barsGap = 1; // Vertical space between the bars of the histogram
 const barsColor = 'steelblue';
-const circlesRadius = 2.5;
-const circlesPadding = 0.7;
+const circlesRadius = 4;
+const circlesPadding = 1.5;
 
 // Load data here
 d3.csv('data/pay_by_gender_tennis.csv').then(rawData => {
@@ -190,44 +190,51 @@ const createViolin = (data) => {
     return [zeroPoint, ...bins, maxPoint];
   }
 
+  const areaColorsScale = d3.scaleOrdinal()
+    .domain([ 'men', 'women' ])
+    .range([ '#F2C53D', '#A6BF4B' ]);
+
   violin
     .append('path')
     .attr('d', areaFactory(expandBins(menBins)))
-    .attr('fill', '#F2C53D')
+    .attr('fill', areaColorsScale('men'))
     .attr('fill-opacity', 0.8)
     .attr('stroke', 'none')
-    .attr('transform', `translate(${width/2 - margin.left}, 0)`);
+    .attr('transform', `translate(${width/2 - margin.left}, 0)`)
+    .attr('filter', 'url(#violin-glow)');
 
   violin
     .append('path')
     .attr('d', areaFactory(expandBins(womenBins)))
-    .attr('fill', '#A6BF4B')
+    .attr('fill', areaColorsScale('women'))
+    .attr('stroke', 'none')
     .attr('fill-opacity', 0.8)
-    .attr('transform', `scale(-1, 1) translate(${-width/2 - margin.left}, 0)`);
+    .attr('transform', `scale(-1, 1) translate(${-width/2 - margin.left}, 0)`)
+    .attr('filter', 'url(#violin-glow)');
 
   const violinSymmetryAxisPosition = width / 2;
 
-  const forceSimulation = d3.forceSimulation(data)
+  d3.forceSimulation(data)
     .force('forceX', d3.forceX(violinSymmetryAxisPosition).strength(0.1))
     .force('forceY', d3.forceY(item => yScale(item.earnings_USD_2019)).strength(10))
     .force('collide', d3.forceCollide(circlesRadius + circlesPadding))
     .force('axis', () => {
-      data.forEach(d => {
+      data.forEach(item => {
         // If man and the circle's x position is on the left side of the violin
-        if (d.gender === 'men' && d.x < violinSymmetryAxisPosition + circlesRadius) {
+        if (item.gender === 'men' && item.x < violinSymmetryAxisPosition + circlesRadius) {
           // Increase velocity toward the right
-          d.vx += 0.004 * d.x;
+          item.vx += 0.004 * item.x;
         }
 
         // If woman and the circle's x position is on the right side of the violin
-        if (d.gender === 'women' && d.x > violinSymmetryAxisPosition - circlesRadius) {
+        if (item.gender === 'women' && item.x > violinSymmetryAxisPosition - circlesRadius) {
           // Increase velocity toward the left
-          d.vx -= 0.004 * d.x;
+          item.vx -= 0.004 * item.x;
         }
       })
     })
     .stop()
-    .tick(200);
+    .tick(300);
 
   const circlesGroup = d3.select('.violin')
     .append('g')
@@ -238,6 +245,8 @@ const createViolin = (data) => {
   const circleColorsScale = d3.scaleOrdinal()
     .domain(['men', 'women'])
     .range(["#BF9B30", "#718233"]);
+
+  const tooltip = d3.select('div.tooltip');
 
   circlesGroup
     .selectAll('circle')
@@ -250,4 +259,78 @@ const createViolin = (data) => {
     .style('stroke', item => circleColorsScale(item.gender))
     .style('fill', item => circleColorsScale(item.gender))
     .style('fill-opacity', 0.6);
+
+  circlesGroup
+    .selectAll('circle')
+    .on('mouseover', (event, item) => {
+      tooltip.select('.name').text(item.name)
+      tooltip.select('.home').text(item.country);
+      tooltip.select('.total-earnings').text(d3.format('.3s')(item.earnings_USD_2019));
+      tooltip
+        .style('top', `${event.pageY + 10}px`)
+        .style('left', `${event.pageX + 10}px`)
+        .classed('visible', true);
+    })
+    .on('mouseout', () => {
+      tooltip.classed('visible', false);
+    });
+
+  const legendOffset = 30;
+  const rectWidth = 40;
+  const rectHeight = 20;
+  const horizontalGap = 12;
+  const verticalGap = 8;
+
+  const legend = d3.select('.violin')
+    .append('g')
+    .attr('transform', `translate(${margin.left + legendOffset}, ${margin.top + legendOffset})`)
+    .attr('class', 'legend');
+
+  legend
+    .append('rect')
+    .attr('x', 0)
+    .attr('y', 0)
+    .attr('width', rectWidth)
+    .attr('height', rectHeight)
+    .attr('fill', areaColorsScale('women'));
+
+  legend
+    .append('text')
+    .attr('x', rectWidth + horizontalGap)
+    .attr('y', rectHeight / 2)
+    .style('font-size', '16px')
+    .attr('alignment-baseline', 'middle')
+    .text('Women');
+
+  legend
+    .append('rect')
+    .attr('x', 0)
+    .attr('y', rectHeight + verticalGap)
+    .attr('width', rectWidth)
+    .attr('height', rectHeight)
+    .attr('fill', areaColorsScale('men'));
+
+  legend
+    .append('text')
+    .attr('x', rectWidth + horizontalGap)
+    .attr('y', 1.6 * rectHeight + verticalGap)
+    .style('font-size', '16px')
+    .attr('alignment-baseline', 'middle')
+    .text('Men');
+
+  const defs = violin.append('defs');
+
+  const filter = defs.append('filter')
+    .attr('id', 'violin-glow');
+
+  filter.append('feGaussianBlur')
+    .attr('stdDeviation', '3.5')
+    .attr('result', 'coloredBlur');
+
+  const feMerge = filter.append('feMerge');
+
+  feMerge.append('feMergeNode')
+    .attr('in', 'coloredBlur');
+  feMerge.append('feMergeNode')
+    .attr('in', 'SourceGraphic');
 };
