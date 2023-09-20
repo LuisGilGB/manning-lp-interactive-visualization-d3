@@ -3,8 +3,8 @@ const width = 600; // Total width of the SVG parent
 const height = 600; // Total height of the SVG parent
 const barsGap = 1; // Vertical space between the bars of the histogram
 const barsColor = 'steelblue';
-const circlesRadius = 2.5;
-const circlesPadding = 0.7;
+const circlesRadius = 4;
+const circlesPadding = 1.5;
 
 // Load data here
 d3.csv('data/pay_by_gender_tennis.csv').then(rawData => {
@@ -234,7 +234,7 @@ const createViolin = (data) => {
       })
     })
     .stop()
-    .tick(200);
+    .tick(300);
 
   const circlesGroup = d3.select('.violin')
     .append('g')
