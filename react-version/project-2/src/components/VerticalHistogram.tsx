@@ -14,9 +14,10 @@ const VerticalHistogram = <T,>({
   height = 500,
   numberMapper,
 }: VerticalHistogramProps<T>) => {
+  console.log('data', data);
   const maxValue = max(data, numberMapper) || 0;
 
-  const binFactory = bin().domain([0, maxValue]).thresholds(10);
+  const binFactory = bin().domain([0, maxValue]).thresholds(20);
   const bins = binFactory(data.map(numberMapper));
 
   const xScale = scaleLinear()

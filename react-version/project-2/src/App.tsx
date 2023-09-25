@@ -1,13 +1,13 @@
 import './App.css';
 import VerticalHistogram from './components/VerticalHistogram.tsx';
 import { useEffect, useState } from 'react';
-import { csv as loadCsv } from 'd3-dsv';
+import * as d3 from 'd3';
 
 const App = () => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<unknown[]>([]);
 
   useEffect(() => {
-    loadCsv('data/tennis-players-2019.csv').then((data: unknown[]) => {
+    d3.csv('data/tennis-players-2019.csv').then((data: unknown[]) => {
       setData(data);
     });
   }, []);
@@ -27,6 +27,7 @@ const App = () => {
       <div id="viz">
         <VerticalHistogram
           data={data}
+          height={1000}
           numberMapper={d => d.earnings_USD_2019}
         />
       </div>
