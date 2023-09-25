@@ -27,7 +27,7 @@ const App = () => {
       <div id="viz">
         <VerticalHistogram
           data={data}
-          height={1000}
+          height={800}
           numberMapper={d => d.earnings_USD_2019}
         />
       </div>
