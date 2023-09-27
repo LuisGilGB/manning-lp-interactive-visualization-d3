@@ -1,4 +1,5 @@
 import * as d3 from 'd3';
+import d3Hooks from '../hooks/d3';
 
 interface VerticalHistogramProps<T> {
   data: T[];
@@ -28,7 +29,7 @@ const VerticalHistogram = <T,>({
   numberMapper,
 }: VerticalHistogramProps<T>) => {
   console.log('data', data);
-  const maxValue = d3.max(data, numberMapper) || 0;
+  const maxValue = d3Hooks.useMax(data, numberMapper);
 
   const binFactory = d3.bin().domain([0, maxValue]).thresholds(20);
   const bins = binFactory(data.map(numberMapper));
