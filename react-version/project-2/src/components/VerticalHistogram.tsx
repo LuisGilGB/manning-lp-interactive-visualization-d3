@@ -1,5 +1,5 @@
-import * as d3 from 'd3';
 import d3Hooks from '../hooks/d3';
+import useIdentity from '../hooks/useIdentity.ts';
 
 interface VerticalHistogramProps<T> {
   data: T[];
@@ -38,16 +38,23 @@ const VerticalHistogram = <T,>({
   });
   const bins = binFactory(data.map(numberMapper));
 
-  const xScale = d3
-    .scaleLinear()
-    .domain([0, d3.max(bins.map(bin => bin.length)) || 0])
-    .range([margins.left, width - margins.right])
-    .nice();
-  const yScale = d3
-    .scaleLinear()
-    .domain([0, (bins.at(-1) || { x1: 0 }).x1 || 0])
-    .range([height - margins.bottom, margins.top])
-    .nice();
+  const xScale = d3Hooks.useScaleLinear({
+    domain: [
+      0,
+      d3Hooks.useMax(
+        bins.map(bin => bin.length),
+        useIdentity(),
+      ),
+    ],
+    range: [margins.left, width - margins.right],
+    nice: true,
+  });
+
+  const yScale = d3Hooks.useScaleLinear({
+    domain: [0, (bins.at(-1) || { x1: 0 }).x1 || 0],
+    range: [height - margins.bottom, margins.top],
+    nice: true,
+  });
 
   return (
     <svg
