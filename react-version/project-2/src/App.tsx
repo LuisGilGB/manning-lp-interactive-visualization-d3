@@ -37,7 +37,7 @@ const App = () => {
           }}
           barsGap={1}
           barsColor="steelblue"
-          numberMapper={d => d.earnings_USD_2019}
+          numberMapper={d => parseInt(d.earnings_USD_2019)}
         />
       </div>
       <div className="tooltip">

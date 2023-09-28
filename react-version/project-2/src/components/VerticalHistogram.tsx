@@ -32,7 +32,7 @@ const VerticalHistogram = <T,>({
 }: VerticalHistogramProps<T>) => {
   console.log('data', data);
   const maxValue = d3Hooks.useMax(data, numberMapper);
-
+  console.log('maxValue', maxValue);
   const binFactory = d3Hooks.useBinFactory({
     minDomainValue: 0,
     maxDomainValue: maxValue,
