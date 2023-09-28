@@ -12,6 +12,7 @@ interface VerticalHistogramProps<T> {
     left: number;
   };
   barsGap?: number;
+  barsColor?: string;
   numberMapper: (d: T) => number;
 }
 
@@ -26,6 +27,7 @@ const VerticalHistogram = <T,>({
     left: 20,
   },
   barsGap = 1,
+  barsColor = 'black',
   numberMapper,
 }: VerticalHistogramProps<T>) => {
   console.log('data', data);
@@ -51,10 +53,11 @@ const VerticalHistogram = <T,>({
   });
 
   const yScale = d3Hooks.useScaleLinear({
-    domain: [0, (bins.at(-1) || { x1: 0 }).x1 || 0],
+    domain: [0, (bins.at(-1) ?? { x1: 0 }).x1 ?? 0],
     range: [height - margins.bottom, margins.top],
-    nice: true,
   });
+
+  console.log('bins', bins);
 
   return (
     <svg
@@ -71,24 +74,17 @@ const VerticalHistogram = <T,>({
       >
         Earnings of the top tennis players in 2019 (USD)
       </text>
-      {bins.map((bin, index) => (
-        <g key={index} transform={`translate(0, ${yScale(bin.x0 || 0)})`}>
-          <rect
-            x={margins.left}
-            y={yScale(bin.x1 || 0)}
-            width={xScale(bin.length) - margins.left}
-            height={yScale(bin.x0 || 0) - yScale(bin.x1 || 0) - barsGap}
-            className="bar"
-          />
-          <text
-            x={xScale(bin.length) + 5}
-            y={(yScale(bin.x0 || 0) + yScale(bin.x1 || 0)) / 2}
-            alignmentBaseline="central"
-            className="label"
-          >
-            {bin.length}
-          </text>
-        </g>
+      <g transform={`translate(${margins.left}, 0)`}></g>
+      {bins.map(bin => (
+        <rect
+          key={`bar-${bin.x0}-${bin.x1}`}
+          x={margins.left}
+          y={yScale(bin.x1 || 0)}
+          width={xScale(bin.length) - margins.left}
+          height={yScale(bin.x0 || 0) - yScale(bin.x1 || 0) - barsGap}
+          className="bar"
+          fill={barsColor}
+        />
       ))}
     </svg>
   );

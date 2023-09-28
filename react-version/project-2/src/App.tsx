@@ -27,7 +27,16 @@ const App = () => {
       <div id="viz">
         <VerticalHistogram
           data={data}
-          height={800}
+          width={600}
+          height={600}
+          margins={{
+            top: 45,
+            right: 30,
+            bottom: 50,
+            left: 80,
+          }}
+          barsGap={1}
+          barsColor="steelblue"
           numberMapper={d => d.earnings_USD_2019}
         />
       </div>
