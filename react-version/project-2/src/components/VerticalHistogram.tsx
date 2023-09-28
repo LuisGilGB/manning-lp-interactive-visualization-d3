@@ -35,7 +35,8 @@ const VerticalHistogram = <T,>({
   console.log('maxValue', maxValue);
   const binFactory = d3Hooks.useBinFactory({
     minDomainValue: 0,
-    maxDomainValue: maxValue,
+    //TODO: parametrize rounding with a prop
+    maxDomainValue: Math.ceil(maxValue / 1_000_000) * 1_000_000,
     thresholds: 20,
   });
   const bins = binFactory(data.map(numberMapper));
