@@ -1,25 +1,40 @@
 import * as d3 from 'd3';
 import { useMemo } from 'react';
 
+enum AxisOrientation {
+  Top = 'top',
+  Right = 'right',
+  Bottom = 'bottom',
+  Left = 'left',
+}
+
 interface AxisProps {
   domain: [number, number];
   range: [number, number];
+  orientation?: `${AxisOrientation}`;
   pixelsPerTick?: number;
 }
 
-const Axis = ({ domain, range, pixelsPerTick = 30 }: AxisProps) => {
+const Axis = ({
+  domain,
+  range,
+  orientation,
+  pixelsPerTick = 30,
+}: AxisProps) => {
   const ticks = useMemo(() => {
-    const xScale = d3.scaleLinear().domain(domain).range(range);
+    const scale = d3.scaleLinear().domain(domain).range(range);
 
-    const width = range[1] - range[0];
-    const numberOfTicksTarget = Math.max(1, Math.floor(width / pixelsPerTick));
+    const rangeWidth = range[1] - range[0];
+    const numberOfTicksTarget = Math.max(
+      1,
+      Math.floor(rangeWidth / pixelsPerTick),
+    );
 
-    return xScale.ticks(numberOfTicksTarget).map(tickValue => ({
+    return scale.ticks(numberOfTicksTarget).map(tickValue => ({
       value: tickValue,
-      xOffset: xScale(tickValue),
+      offset: scale(tickValue),
     }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [domain.join('-'), range.join('-')]);
+  }, [domain.join('-'), range.join('-'), pixelsPerTick]);
 
   return (
     <svg>
@@ -28,8 +43,8 @@ const Axis = ({ domain, range, pixelsPerTick = 30 }: AxisProps) => {
         fill="none"
         stroke="currentColor"
       />
-      {ticks.map(({ value, xOffset }) => (
-        <g key={value} transform={`translate(${xOffset}, 0)`}>
+      {ticks.map(({ value, offset }) => (
+        <g key={value} transform={`translate(${offset}, 0)`}>
           <line y2="6" stroke="currentColor" />
           <text
             key={value}
