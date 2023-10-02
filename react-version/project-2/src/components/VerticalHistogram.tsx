@@ -1,5 +1,6 @@
 import d3Hooks from '../hooks/d3';
 import useIdentity from '../hooks/useIdentity.ts';
+import Axis from './Axis.tsx';
 
 interface VerticalHistogramProps<T> {
   data: T[];
@@ -75,7 +76,13 @@ const VerticalHistogram = <T,>({
       >
         Earnings of the top tennis players in 2019 (USD)
       </text>
-      <g transform={`translate(${margins.left}, 0)`}></g>
+      <Axis
+        domain={[0, maxValue]}
+        range={[height - margins.bottom, margins.top]}
+        transform={`translate(${margins.left}, 0)`}
+        pixelsPerTick={30}
+        orientation="left"
+      />
       {bins.map(bin => (
         <rect
           key={`bar-${bin.x0}-${bin.x1}`}
