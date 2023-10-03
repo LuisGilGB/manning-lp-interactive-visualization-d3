@@ -60,8 +60,6 @@ const VerticalHistogram = <T,>({
   });
 
   console.log('bins', bins);
-  console.log('xScale', xScale.domain());
-  console.log('yScale', yScale.domain());
 
   return (
     <svg
@@ -79,15 +77,13 @@ const VerticalHistogram = <T,>({
         Earnings of the top tennis players in 2019 (USD)
       </text>
       <Axis
-        domain={yScale.domain() as [number, number]}
-        range={[height - margins.bottom, margins.top]}
+        scale={yScale}
         transform={`translate(${margins.left}, 0)`}
         pixelsPerTick={30}
         orientation="left"
       />
       <Axis
-        domain={xScale.domain() as [number, number]}
-        range={[margins.left, width - margins.right]}
+        scale={xScale}
         transform={`translate(0, ${height - margins.bottom})`}
         pixelsPerTick={50}
         orientation="bottom"

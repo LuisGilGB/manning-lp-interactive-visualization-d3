@@ -1,6 +1,5 @@
 import * as d3 from 'd3';
 import { useMemo } from 'react';
-import useScaleLinear from '../hooks/d3/useScaleLinear.ts';
 
 enum AxisOrientation {
   Top = 'top',
@@ -10,21 +9,19 @@ enum AxisOrientation {
 }
 
 interface AxisProps {
-  domain: [number, number];
-  range: [number, number];
+  scale: d3.ScaleLinear<number, number>;
   orientation?: `${AxisOrientation}`;
   pixelsPerTick?: number;
   transform?: string;
 }
 
 const Axis = ({
-  domain,
-  range,
+  scale,
   orientation,
   pixelsPerTick = 30,
   transform,
 }: AxisProps) => {
-  const scale = useScaleLinear({ domain, range });
+  const range = useMemo(() => scale.range(), [scale]);
 
   const ticks = useMemo(() => {
     const rangeWidth = Math.abs(range[1] - range[0]);
