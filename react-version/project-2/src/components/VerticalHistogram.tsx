@@ -32,11 +32,11 @@ const VerticalHistogram = <T,>({
   numberMapper,
 }: VerticalHistogramProps<T>) => {
   const maxValue = d3Hooks.useMax(data, numberMapper);
+  //TODO: parametrize rounding with a prop
   const roundedMaxValue = Math.ceil(maxValue / 1_000_000) * 1_000_000;
 
   const binFactory = d3Hooks.useBinFactory({
     minDomainValue: 0,
-    //TODO: parametrize rounding with a prop
     maxDomainValue: roundedMaxValue,
     thresholds: 20,
   });
@@ -60,6 +60,8 @@ const VerticalHistogram = <T,>({
   });
 
   console.log('bins', bins);
+  console.log('xScale', xScale.domain());
+  console.log('yScale', yScale.domain());
 
   return (
     <svg
@@ -77,11 +79,18 @@ const VerticalHistogram = <T,>({
         Earnings of the top tennis players in 2019 (USD)
       </text>
       <Axis
-        domain={[0, roundedMaxValue]}
+        domain={yScale.domain() as [number, number]}
         range={[height - margins.bottom, margins.top]}
         transform={`translate(${margins.left}, 0)`}
         pixelsPerTick={30}
         orientation="left"
+      />
+      <Axis
+        domain={xScale.domain() as [number, number]}
+        range={[margins.left, width - margins.right]}
+        transform={`translate(0, ${height - margins.bottom})`}
+        pixelsPerTick={50}
+        orientation="bottom"
       />
       {bins.map(bin => (
         <rect
