@@ -1,3 +1,4 @@
+import * as d3 from 'd3';
 import { useMemo } from 'react';
 import useScaleLinear from '../hooks/d3/useScaleLinear.ts';
 
@@ -34,7 +35,7 @@ const Axis = ({
     );
 
     return scale.ticks(numberOfTicksTarget).map(tickValue => ({
-      value: tickValue,
+      value: d3.format('.2s')(tickValue),
       offset: scale(tickValue),
     }));
   }, [pixelsPerTick, range, scale]);
