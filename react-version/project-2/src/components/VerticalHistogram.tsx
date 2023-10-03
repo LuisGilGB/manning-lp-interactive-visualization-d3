@@ -31,13 +31,13 @@ const VerticalHistogram = <T,>({
   barsColor = 'black',
   numberMapper,
 }: VerticalHistogramProps<T>) => {
-  console.log('data', data);
   const maxValue = d3Hooks.useMax(data, numberMapper);
-  console.log('maxValue', maxValue);
+  const roundedMaxValue = Math.ceil(maxValue / 1_000_000) * 1_000_000;
+
   const binFactory = d3Hooks.useBinFactory({
     minDomainValue: 0,
     //TODO: parametrize rounding with a prop
-    maxDomainValue: Math.ceil(maxValue / 1_000_000) * 1_000_000,
+    maxDomainValue: roundedMaxValue,
     thresholds: 20,
   });
   const bins = binFactory(data.map(numberMapper));
@@ -77,7 +77,7 @@ const VerticalHistogram = <T,>({
         Earnings of the top tennis players in 2019 (USD)
       </text>
       <Axis
-        domain={[0, maxValue]}
+        domain={[0, roundedMaxValue]}
         range={[height - margins.bottom, margins.top]}
         transform={`translate(${margins.left}, 0)`}
         pixelsPerTick={30}

@@ -27,7 +27,6 @@ const Axis = ({
   const scale = useScaleLinear({ domain, range });
 
   const ticks = useMemo(() => {
-    console.log('range', range);
     const rangeWidth = Math.abs(range[1] - range[0]);
     const numberOfTicksTarget = Math.max(
       1,
@@ -44,7 +43,6 @@ const Axis = ({
     orientation === AxisOrientation.Left ||
     orientation === AxisOrientation.Right;
 
-  console.log('ticks', ticks);
   if (isVertical) {
     return (
       <g transform={transform}>
