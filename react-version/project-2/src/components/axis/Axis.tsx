@@ -1,16 +1,11 @@
 import * as d3 from 'd3';
 import { useMemo } from 'react';
-
-enum AxisOrientation {
-  Top = 'top',
-  Right = 'right',
-  Bottom = 'bottom',
-  Left = 'left',
-}
+import { AxisOrientation } from './types';
+import Tick from './Tick';
 
 interface AxisProps {
   scale: d3.ScaleLinear<number, number>;
-  orientation?: `${AxisOrientation}`;
+  orientation: `${AxisOrientation}`;
   pixelsPerTick?: number;
   transform?: string;
 }
@@ -49,19 +44,12 @@ const Axis = ({
           stroke="currentColor"
         />
         {ticks.map(({ value, offset }) => (
-          <g key={value} transform={`translate(0, ${offset})`}>
-            <line x2="-6" stroke="currentColor" />
-            <text
-              key={value}
-              style={{
-                fontSize: '10px',
-                textAnchor: 'end',
-                transform: 'translateX(-8px)',
-              }}
-            >
-              {value}
-            </text>
-          </g>
+          <Tick
+            key={value}
+            value={value}
+            orientation={orientation}
+            transform={`translate(0, ${offset})`}
+          />
         ))}
       </g>
     );
@@ -75,19 +63,12 @@ const Axis = ({
         stroke="currentColor"
       />
       {ticks.map(({ value, offset }) => (
-        <g key={value} transform={`translate(${offset}, 0)`}>
-          <line y2="6" stroke="currentColor" />
-          <text
-            key={value}
-            style={{
-              fontSize: '10px',
-              textAnchor: 'middle',
-              transform: 'translateY(20px)',
-            }}
-          >
-            {value}
-          </text>
-        </g>
+        <Tick
+          key={value}
+          value={value}
+          orientation={orientation}
+          transform={`translate(${offset}, 0)`}
+        />
       ))}
     </g>
   );

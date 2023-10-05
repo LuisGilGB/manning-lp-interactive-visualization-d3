@@ -1,6 +1,6 @@
 import d3Hooks from '../hooks/d3';
-import useIdentity from '../hooks/useIdentity.ts';
-import Axis from './Axis.tsx';
+import useIdentity from '../hooks/useIdentity';
+import Axis from './axis/Axis';
 
 interface VerticalHistogramProps<T> {
   data: T[];
