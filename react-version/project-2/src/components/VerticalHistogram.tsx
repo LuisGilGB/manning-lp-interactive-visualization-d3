@@ -1,6 +1,8 @@
 import d3Hooks from '../hooks/d3';
 import useIdentity from '../hooks/useIdentity';
 import Axis from './axis/Axis';
+import Curve from './curve/Curve.tsx';
+import Area from './area/Area.tsx';
 
 interface VerticalHistogramProps<T> {
   data: T[];
@@ -59,7 +61,9 @@ const VerticalHistogram = <T,>({
     range: [height - margins.bottom, margins.top],
   });
 
-  console.log('bins', bins);
+  const zeroPoint = { length: 0, x0: 0, x1: 0 };
+  const maxPoint = { length: 0, x0: bins.at(-1).x1, x1: bins.at(-1).x1 };
+  const expandedBins = [zeroPoint, ...bins, maxPoint];
 
   return (
     <svg
@@ -99,6 +103,19 @@ const VerticalHistogram = <T,>({
           fill={barsColor}
         />
       ))}
+      <Area
+        bins={expandedBins}
+        xScale={xScale}
+        yScale={yScale}
+        areaColor="orange"
+      />
+      <Curve
+        bins={expandedBins}
+        xScale={xScale}
+        yScale={yScale}
+        color="red"
+        strokeWidth={2}
+      />
     </svg>
   );
 };
