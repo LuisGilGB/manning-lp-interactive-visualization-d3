@@ -1,6 +1,7 @@
 import d3Hooks from '../hooks/d3';
 import useIdentity from '../hooks/useIdentity.ts';
 import Area from './area/Area.tsx';
+import Axis from './axis/Axis.tsx';
 
 interface AsymmetricViolinPlotProps<T> {
   leftData: T[];
@@ -32,10 +33,12 @@ const AsymmetricViolinPlot = <T,>({
   const leftMaxValue = d3Hooks.useMax(leftData, numberMapper);
   const rightMaxValue = d3Hooks.useMax(rightData, numberMapper);
   const maxValue = Math.max(leftMaxValue, rightMaxValue);
+  //TODO: parametrize rounding with a prop
+  const roundedMaxValue = Math.ceil(maxValue / 1_000_000) * 1_000_000;
 
   const binFactory = d3Hooks.useBinFactory({
     minDomainValue: 0,
-    maxDomainValue: maxValue,
+    maxDomainValue: roundedMaxValue,
     thresholds: 20,
   });
   const leftBins = binFactory(leftData.map(numberMapper));
@@ -88,6 +91,20 @@ const AsymmetricViolinPlot = <T,>({
           yScale={yScale}
           areaColor="red"
           transform={`translate(${width / 2 - margins.left}, 0)`}
+        />
+        <Axis
+          scale={yScale}
+          orientation="left"
+          pixelsPerTick={30}
+          transform={`translate(${margins.left}, 0)`}
+        />
+        <line
+          x1={margins?.left}
+          y1={height - margins?.bottom}
+          x2={width - margins?.right}
+          y2={height - margins?.bottom}
+          stroke="black"
+          strokeWidth={1}
         />
       </g>
     </svg>
