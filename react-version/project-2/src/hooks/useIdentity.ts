@@ -1,5 +1,7 @@
 import { useCallback } from 'react';
 
-const useIdentity = () => useCallback((d: number) => d, []);
+const identity = <T>(d: T) => d;
+
+const useIdentity = () => useCallback(identity, []);
 
 export default useIdentity;
