@@ -2,6 +2,7 @@ import './App.css';
 import VerticalHistogram from './components/VerticalHistogram.tsx';
 import { useEffect, useState } from 'react';
 import * as d3 from 'd3';
+import AsymmetricViolinPlot from './components/AsymmetricViolinPlot.tsx';
 
 const App = () => {
   const [data, setData] = useState<unknown[]>([]);
@@ -37,6 +38,21 @@ const App = () => {
           }}
           barsGap={1}
           barsColor="steelblue"
+          numberMapper={d => parseInt(d.earnings_USD_2019)}
+        />
+      </div>
+      <div id="viz-2">
+        <AsymmetricViolinPlot
+          leftData={data.filter(d => d.gender === 'women')}
+          rightData={data.filter(d => d.gender === 'men')}
+          width={600}
+          height={600}
+          margins={{
+            top: 45,
+            right: 30,
+            bottom: 50,
+            left: 80,
+          }}
           numberMapper={d => parseInt(d.earnings_USD_2019)}
         />
       </div>
