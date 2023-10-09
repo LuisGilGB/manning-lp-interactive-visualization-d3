@@ -1,6 +1,6 @@
 import d3Hooks from '../hooks/d3';
 import useIdentity from '../hooks/useIdentity.ts';
-import Curve from './curve/Curve.tsx';
+import Area from './area/Area.tsx';
 
 interface AsymmetricViolinPlotProps<T> {
   leftData: T[];
@@ -41,15 +41,19 @@ const AsymmetricViolinPlot = <T,>({
   const leftBins = binFactory(leftData.map(numberMapper));
   const rightBins = binFactory(rightData.map(numberMapper));
 
+  const leftMaxBinLength = d3Hooks.useMax(
+    leftBins.map(bin => bin.length),
+    useIdentity(),
+  );
+  const rightMaxBinLength = d3Hooks.useMax(
+    rightBins.map(bin => bin.length),
+    useIdentity(),
+  );
+  const maxBinLength = Math.max(leftMaxBinLength, rightMaxBinLength);
+
   const xScale = d3Hooks.useScaleLinear({
-    domain: [
-      0,
-      d3Hooks.useMax(
-        leftBins.map(bin => bin.length),
-        useIdentity(),
-      ),
-    ],
-    range: [margins.left, width - margins.right],
+    domain: [0, maxBinLength],
+    range: [margins.left, width / 2],
     nice: true,
   });
 
@@ -64,25 +68,26 @@ const AsymmetricViolinPlot = <T,>({
     x0: leftBins.at(-1).x1,
     x1: leftBins.at(-1).x1,
   };
+
   const leftCurvePoints = [zeroPoint, ...leftBins, maxPoint];
   const rightCurvePoints = [zeroPoint, ...rightBins, maxPoint];
 
   return (
     <svg width={width} height={height}>
       <g>
-        <Curve
+        <Area
           bins={leftCurvePoints}
           xScale={xScale}
           yScale={yScale}
-          color="blue"
-          strokeWidth={1}
+          areaColor="blue"
+          transform={`scale(-1, 1) translate(${-width / 2 - margins.left}, 0)`}
         />
-        <Curve
+        <Area
           bins={rightCurvePoints}
           xScale={xScale}
           yScale={yScale}
-          color="red"
-          strokeWidth={1}
+          areaColor="red"
+          transform={`translate(${width / 2 - margins.left}, 0)`}
         />
       </g>
     </svg>
