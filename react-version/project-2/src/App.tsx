@@ -53,6 +53,8 @@ const App = () => {
             bottom: 50,
             left: 80,
           }}
+          leftColor="#A6BF4B"
+          rightColor="#F2C53D"
           numberMapper={d => parseInt(d.earnings_USD_2019)}
         />
       </div>

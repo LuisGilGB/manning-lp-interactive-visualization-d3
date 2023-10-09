@@ -14,6 +14,8 @@ interface AsymmetricViolinPlotProps<T> {
     bottom: number;
     left: number;
   };
+  leftColor?: string;
+  rightColor?: string;
   numberMapper: (d: T) => number;
 }
 
@@ -28,6 +30,8 @@ const AsymmetricViolinPlot = <T,>({
     bottom: 20,
     left: 20,
   },
+  leftColor = 'black',
+  rightColor = 'black',
   numberMapper,
 }: AsymmetricViolinPlotProps<T>) => {
   const leftMaxValue = d3Hooks.useMax(leftData, numberMapper);
@@ -82,14 +86,14 @@ const AsymmetricViolinPlot = <T,>({
           bins={leftCurvePoints}
           xScale={xScale}
           yScale={yScale}
-          areaColor="blue"
+          areaColor={leftColor}
           transform={`scale(-1, 1) translate(${-width / 2 - margins.left}, 0)`}
         />
         <Area
           bins={rightCurvePoints}
           xScale={xScale}
           yScale={yScale}
-          areaColor="red"
+          areaColor={rightColor}
           transform={`translate(${width / 2 - margins.left}, 0)`}
         />
         <Axis
