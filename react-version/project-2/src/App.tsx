@@ -1,15 +1,17 @@
 import './App.css';
 import VerticalHistogram from './components/VerticalHistogram.tsx';
 import { useEffect, useState } from 'react';
-import * as d3 from 'd3';
 import AsymmetricViolinPlot from './components/AsymmetricViolinPlot.tsx';
+import tennisRepository from './infrastructure/repositories/tennis/tennis.repository.ts';
+import TennisPlayer from './domain/TennisPlayer.ts';
+import Gender from './domain/Gender.enum.ts';
 
 const App = () => {
-  const [data, setData] = useState<unknown[]>([]);
+  const [data, setData] = useState<TennisPlayer[]>([]);
 
   useEffect(() => {
-    d3.csv('data/tennis-players-2019.csv').then((data: unknown[]) => {
-      setData(data);
+    tennisRepository.getTennisPlayers().then(tennisPlayers => {
+      setData(tennisPlayers);
     });
   }, []);
 
@@ -38,13 +40,13 @@ const App = () => {
           }}
           barsGap={1}
           barsColor="steelblue"
-          numberMapper={d => parseInt(d.earnings_USD_2019)}
+          numberMapper={d => d.earningsUsd2019}
         />
       </div>
       <div id="viz-2">
         <AsymmetricViolinPlot
-          leftData={data.filter(d => d.gender === 'women')}
-          rightData={data.filter(d => d.gender === 'men')}
+          leftData={data.filter(d => d.gender === Gender.FEMALE)}
+          rightData={data.filter(d => d.gender === Gender.MALE)}
           width={600}
           height={600}
           margins={{
@@ -55,7 +57,7 @@ const App = () => {
           }}
           leftColor="#A6BF4B"
           rightColor="#F2C53D"
-          numberMapper={d => parseInt(d.earnings_USD_2019)}
+          numberMapper={d => d.earningsUsd2019}
         />
       </div>
       <div className="tooltip">
