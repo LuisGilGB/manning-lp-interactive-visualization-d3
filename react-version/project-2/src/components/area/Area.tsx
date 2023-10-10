@@ -1,6 +1,14 @@
 import * as d3 from 'd3';
 
-const Area = ({ bins, xScale, yScale, areaColor, transform }) => {
+interface AreaProps {
+  bins: d3.Bin<number, number>[];
+  xScale: d3.ScaleLinear<number, number>;
+  yScale: d3.ScaleLinear<number, number>;
+  areaColor: string;
+  transform?: string;
+}
+
+const Area = ({ bins, xScale, yScale, areaColor, transform }: AreaProps) => {
   const areaFactory = d3
     .area()
     .x0(() => xScale(0))
