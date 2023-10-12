@@ -1,0 +1,25 @@
+.card {
+  position: absolute;
+  top: -9000rem;
+  left: -9000rem;
+  padding: 10px 15px;
+  background-color: rgba(176,176,171, 0.8);
+  border-radius: 3px;
+  font-size: 14px;
+  opacity: 0;
+  transition: opacity 0.1s ease-in;
+}
+
+.card:global(.visible) {
+  opacity: 1;
+  transition-timing-function: ease-in-out;
+}
+
+.card div {
+  margin: 3px 0;
+}
+
+.card .name,
+.card .total-earnings {
+  font-weight: 700;
+}

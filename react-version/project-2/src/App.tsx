@@ -60,13 +60,6 @@ const App = () => {
           numberMapper={d => d.earningsUsd2019}
         />
       </div>
-      <div className="tooltip">
-        <div className="name"></div>
-        <div className="home"></div>
-        <div className="total-earnings-section">
-          Total prize money: <span className="total-earnings"></span>
-        </div>
-      </div>
 
       <div className="source">
         <div className="label">Sources:</div>
