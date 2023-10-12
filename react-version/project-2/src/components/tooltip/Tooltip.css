@@ -1,0 +1,12 @@
+.tooltip {
+  position: absolute;
+  top: -9000rem;
+  left: -9000rem;
+  opacity: 0;
+  transition: opacity 0.1s ease-in;
+}
+
+.tooltip.visible {
+  opacity: 1;
+  transition-timing-function: ease-in-out;
+}
