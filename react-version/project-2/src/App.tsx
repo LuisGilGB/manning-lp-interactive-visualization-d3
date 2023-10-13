@@ -5,6 +5,7 @@ import AsymmetricViolinPlot from './components/AsymmetricViolinPlot.tsx';
 import tennisRepository from './infrastructure/repositories/tennis/tennis.repository.ts';
 import TennisPlayer from './domain/TennisPlayer.ts';
 import Gender from './domain/Gender.enum.ts';
+import PlayerCircleMarker from './components/PlayerCircleMarker.tsx';
 
 const App = () => {
   const [data, setData] = useState<TennisPlayer[]>([]);
@@ -60,14 +61,11 @@ const App = () => {
           numberMapper={d => d.earningsUsd2019}
         >
           {data.map((player, i) => (
-            <circle
+            <PlayerCircleMarker
               key={player.name}
+              player={player}
               cx={100 + i * 10}
               cy={400}
-              r={4}
-              stroke="red"
-              fill="orange"
-              fillOpacity={0.6}
             />
           ))}
         </AsymmetricViolinPlot>
