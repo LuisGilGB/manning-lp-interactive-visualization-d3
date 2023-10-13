@@ -24,14 +24,17 @@ const PlayerCircleMarker = ({ player, cx, cy }: PlayerCircleMarkerProps) => {
         stroke="red"
         fill="orange"
         fillOpacity={0.6}
-        onMouseEnter={() => setHoverData({ x: cx, y: cy })}
+        onMouseEnter={event => {
+          const [x, y] = [event.pageX, event.pageY];
+          setHoverData({ x, y });
+        }}
         onMouseLeave={() => setHoverData(null)}
       />
-      {hoverData && (
-        <Tooltip x={hoverData?.x} y={hoverData?.y} visible>
+      {
+        <Tooltip x={hoverData?.x} y={hoverData?.y} visible={!!hoverData}>
           <TennisPlayerCard player={player} />
         </Tooltip>
-      )}
+      }
     </>
   );
 };

@@ -10,6 +10,7 @@ interface TooltipProps {
 }
 
 const Tooltip = ({ x, y, visible, children }: TooltipProps) => {
+  console.log({ x, y, visible });
   return (
     <div className={clsx('tooltip', { visible })} style={{ left: x, top: y }}>
       {children}
