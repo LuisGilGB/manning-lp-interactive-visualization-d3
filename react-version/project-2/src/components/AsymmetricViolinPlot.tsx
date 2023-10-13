@@ -2,8 +2,10 @@ import d3Hooks from '../hooks/d3';
 import useIdentity from '../hooks/useIdentity.ts';
 import Area from './area/Area.tsx';
 import Axis from './axis/Axis.tsx';
+import { ReactNode } from 'react';
 
 interface AsymmetricViolinPlotProps<T> {
+  children?: ReactNode | ((item) => ReactNode);
   leftData: T[];
   rightData: T[];
   width?: number;
@@ -20,6 +22,7 @@ interface AsymmetricViolinPlotProps<T> {
 }
 
 const AsymmetricViolinPlot = <T,>({
+  children,
   leftData,
   rightData,
   width = 500,
@@ -110,6 +113,9 @@ const AsymmetricViolinPlot = <T,>({
           stroke="black"
           strokeWidth={1}
         />
+        {typeof children === 'function'
+          ? [...leftBins, ...rightBins].map(children)
+          : children}
       </g>
     </svg>
   );

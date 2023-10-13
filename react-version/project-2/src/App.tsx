@@ -58,7 +58,19 @@ const App = () => {
           leftColor="#A6BF4B"
           rightColor="#F2C53D"
           numberMapper={d => d.earningsUsd2019}
-        />
+        >
+          {data.map((player, i) => (
+            <circle
+              key={player.name}
+              cx={100 + i * 10}
+              cy={400}
+              r={4}
+              stroke="red"
+              fill="orange"
+              fillOpacity={0.6}
+            />
+          ))}
+        </AsymmetricViolinPlot>
       </div>
 
       <div className="source">
