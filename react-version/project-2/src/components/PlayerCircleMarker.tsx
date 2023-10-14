@@ -2,6 +2,8 @@ import TennisPlayer from '../domain/TennisPlayer.ts';
 import { useState } from 'react';
 import Tooltip from './tooltip/Tooltip.tsx';
 import TennisPlayerCard from './card/TennisPlayerCard.tsx';
+import clsx from 'clsx';
+import styles from './PlayerCircleMarker.module.css';
 
 interface PlayerCircleMarkerProps {
   player: TennisPlayer;
@@ -21,20 +23,21 @@ const PlayerCircleMarker = ({ player, cx, cy }: PlayerCircleMarkerProps) => {
         cx={cx}
         cy={cy}
         r={4}
+        className={clsx(styles['marker'])}
         stroke="red"
         fill="orange"
         fillOpacity={0.6}
-        onMouseEnter={event => {
-          const [x, y] = [event.pageX, event.pageY];
-          setHoverData({ x, y });
+        onMouseEnter={() => {
+          setHoverData({ x: 10, y: 10 });
         }}
         onMouseLeave={() => setHoverData(null)}
-      />
-      {
-        <Tooltip x={hoverData?.x} y={hoverData?.y} visible={!!hoverData}>
-          <TennisPlayerCard player={player} />
-        </Tooltip>
-      }
+      >
+        {
+          <Tooltip x={hoverData?.x} y={hoverData?.y} visible={!!hoverData}>
+            <TennisPlayerCard player={player} />
+          </Tooltip>
+        }
+      </circle>
     </>
   );
 };
