@@ -6,9 +6,18 @@ import tennisRepository from './infrastructure/repositories/tennis/tennis.reposi
 import TennisPlayer from './domain/TennisPlayer.ts';
 import Gender from './domain/Gender.enum.ts';
 import PlayerCircleMarker from './components/PlayerCircleMarker.tsx';
+import clsx from 'clsx';
+
+enum DataVizType {
+  VERTICAL_HISTOGRAM = 'VERTICAL_HISTOGRAM',
+  ASYMMETRIC_VIOLIN_PLOT = 'ASYMMETRIC_VIOLIN_PLOT',
+}
 
 const App = () => {
   const [data, setData] = useState<TennisPlayer[]>([]);
+  const [dataVizType, setDataVizType] = useState<DataVizType>(
+    DataVizType.ASYMMETRIC_VIOLIN_PLOT,
+  );
 
   useEffect(() => {
     tennisRepository.getTennisPlayers().then(tennisPlayers => {
@@ -28,47 +37,67 @@ const App = () => {
           </p>
         </div>
       </div>
-      <div id="viz">
-        <VerticalHistogram
-          data={data}
-          width={600}
-          height={600}
-          margins={{
-            top: 45,
-            right: 30,
-            bottom: 50,
-            left: 80,
-          }}
-          barsGap={1}
-          barsColor="steelblue"
-          numberMapper={d => d.earningsUsd2019}
-        />
-      </div>
-      <div id="viz-2">
-        <AsymmetricViolinPlot
-          leftData={data.filter(d => d.gender === Gender.FEMALE)}
-          rightData={data.filter(d => d.gender === Gender.MALE)}
-          width={600}
-          height={600}
-          margins={{
-            top: 45,
-            right: 30,
-            bottom: 50,
-            left: 80,
-          }}
-          leftColor="#A6BF4B"
-          rightColor="#F2C53D"
-          numberMapper={d => d.earningsUsd2019}
+      <div className="data-viz-selector">
+        <button
+          className={clsx('btn', 'btn-primary', 'data-viz-sel-btn', {
+            active: dataVizType === DataVizType.VERTICAL_HISTOGRAM,
+          })}
+          onClick={() => setDataVizType(DataVizType.VERTICAL_HISTOGRAM)}
         >
-          {data.map((player, i) => (
-            <PlayerCircleMarker
-              key={player.name}
-              player={player}
-              cx={100 + i * 10}
-              cy={400}
-            />
-          ))}
-        </AsymmetricViolinPlot>
+          Vertical Histogram
+        </button>
+        <button
+          className={clsx('btn', 'btn-primary', 'data-viz-sel-btn', {
+            active: dataVizType === DataVizType.ASYMMETRIC_VIOLIN_PLOT,
+          })}
+          onClick={() => setDataVizType(DataVizType.ASYMMETRIC_VIOLIN_PLOT)}
+        >
+          Asymmetric Violin Plot
+        </button>
+      </div>
+      <div id="viz">
+        {dataVizType === DataVizType.VERTICAL_HISTOGRAM && (
+          <VerticalHistogram
+            data={data}
+            width={600}
+            height={600}
+            margins={{
+              top: 45,
+              right: 30,
+              bottom: 50,
+              left: 80,
+            }}
+            barsGap={1}
+            barsColor="steelblue"
+            numberMapper={d => d.earningsUsd2019}
+          />
+        )}
+        {dataVizType === DataVizType.ASYMMETRIC_VIOLIN_PLOT && (
+          <AsymmetricViolinPlot
+            leftData={data.filter(d => d.gender === Gender.FEMALE)}
+            rightData={data.filter(d => d.gender === Gender.MALE)}
+            width={600}
+            height={600}
+            margins={{
+              top: 45,
+              right: 30,
+              bottom: 50,
+              left: 80,
+            }}
+            leftColor="#A6BF4B"
+            rightColor="#F2C53D"
+            numberMapper={d => d.earningsUsd2019}
+          >
+            {data.map((player, i) => (
+              <PlayerCircleMarker
+                key={player.name}
+                player={player}
+                cx={100 + i * 10}
+                cy={400}
+              />
+            ))}
+          </AsymmetricViolinPlot>
+        )}
       </div>
 
       <div className="source">
