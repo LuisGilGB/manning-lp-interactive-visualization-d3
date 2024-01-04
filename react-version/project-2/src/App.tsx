@@ -55,7 +55,7 @@ const App = () => {
           Asymmetric Violin Plot
         </button>
       </div>
-      <div id="viz">
+      <div id="viz" style={{ position: 'relative' }}>
         {dataVizType === DataVizType.VERTICAL_HISTOGRAM && (
           <VerticalHistogram
             data={data}
@@ -94,6 +94,7 @@ const App = () => {
                 player={player}
                 cx={100 + i * 10}
                 cy={400}
+                tooltipContainer={document.getElementById('viz')}
               />
             ))}
           </AsymmetricViolinPlot>

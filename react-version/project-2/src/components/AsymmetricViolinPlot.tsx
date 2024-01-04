@@ -82,6 +82,11 @@ const AsymmetricViolinPlot = <T,>({
   const leftCurvePoints = [zeroPoint, ...leftBins, maxPoint];
   const rightCurvePoints = [zeroPoint, ...rightBins, maxPoint];
 
+  console.log(
+    '[...leftBins, ...rightBins]',
+    [...leftBins, ...rightBins].flat(),
+  );
+
   return (
     <svg width={width} height={height}>
       <g>
