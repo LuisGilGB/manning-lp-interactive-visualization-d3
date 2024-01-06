@@ -5,6 +5,11 @@ import TennisPlayerCard from './card/TennisPlayerCard.tsx';
 import clsx from 'clsx';
 import styles from './PlayerCircleMarker.module.css';
 
+interface Position {
+  x: number;
+  y: number;
+}
+
 interface PlayerCircleMarkerProps {
   player: TennisPlayer;
   cx: number;

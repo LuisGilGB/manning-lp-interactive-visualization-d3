@@ -1,6 +1,6 @@
 import './App.css';
 import VerticalHistogram from './components/VerticalHistogram.tsx';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import AsymmetricViolinPlot from './components/AsymmetricViolinPlot.tsx';
 import tennisRepository from './infrastructure/repositories/tennis/tennis.repository.ts';
 import TennisPlayer from './domain/TennisPlayer.ts';
@@ -18,6 +18,7 @@ const App = () => {
   const [dataVizType, setDataVizType] = useState<DataVizType>(
     DataVizType.ASYMMETRIC_VIOLIN_PLOT,
   );
+  const vizContainer = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     tennisRepository.getTennisPlayers().then(tennisPlayers => {
@@ -55,7 +56,7 @@ const App = () => {
           Asymmetric Violin Plot
         </button>
       </div>
-      <div id="viz" style={{ position: 'relative' }}>
+      <div id="viz" style={{ position: 'relative' }} ref={vizContainer}>
         {dataVizType === DataVizType.VERTICAL_HISTOGRAM && (
           <VerticalHistogram
             data={data}
@@ -94,7 +95,7 @@ const App = () => {
                 player={player}
                 cx={100 + i * 10}
                 cy={400}
-                tooltipContainer={document.getElementById('viz')}
+                tooltipContainer={vizContainer.current}
               />
             ))}
           </AsymmetricViolinPlot>
