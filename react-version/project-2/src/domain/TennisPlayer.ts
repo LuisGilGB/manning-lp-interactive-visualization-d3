@@ -22,6 +22,20 @@ class TennisPlayer {
     this.country = params.country;
     this.earningsUsd2019 = params.earningsUsd2019;
   }
+
+  isMale(): boolean {
+    return this.gender === Gender.MALE;
+  }
+
+  clone(): TennisPlayer {
+    return new TennisPlayer({
+      name: this.name,
+      rank: this.rank,
+      gender: this.gender,
+      country: this.country,
+      earningsUsd2019: this.earningsUsd2019,
+    });
+  }
 }
 
 export default TennisPlayer;
