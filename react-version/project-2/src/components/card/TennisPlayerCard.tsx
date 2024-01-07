@@ -15,7 +15,12 @@ const TennisPlayerCard = ({ player, className }: TennisPlayerCardProps) => {
       <div className={styles['total-earnings-section']}>
         Total prize money:{' '}
         <span className={styles['total-earnings']}>
-          {player.earningsUsd2019}
+          {player.earningsUsd2019.toLocaleString('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            notation: 'compact',
+            maximumSignificantDigits: 3,
+          })}
         </span>
       </div>
     </div>
