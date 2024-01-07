@@ -1,5 +1,13 @@
 import * as d3 from 'd3';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
+
+type ForceReadyData<Data> = Data & {
+  index: number;
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+};
 
 interface ForceSimulationProps<Data extends Record<string, unknown>> {
   data: Data[];
@@ -7,9 +15,9 @@ interface ForceSimulationProps<Data extends Record<string, unknown>> {
   yStrength: number;
   ticks: number;
   collideRadius?: number;
-  xForceCallback?: <T extends Data>(item: T) => number;
-  yForceCallback?: <T extends Data>(item: T) => number;
-  itemForceCallback: <T extends Data>(item: T) => void;
+  xForceCallback?: (item: ForceReadyData<Data>) => number;
+  yForceCallback?: (item: ForceReadyData<Data>) => number;
+  itemForceCallback: (item: ForceReadyData<Data>) => void;
 }
 
 const useForceSimulation = <
@@ -23,29 +31,57 @@ const useForceSimulation = <
   xForceCallback,
   yForceCallback,
   itemForceCallback,
-}: ForceSimulationProps<Data>) => {
-  return d3
-    .forceSimulation(data)
-    .force(
-      'x',
-      useMemo(() => d3.forceX(xForceCallback).strength(xStrength), [xStrength]),
-    )
-    .force(
-      'y',
-      useMemo(() => d3.forceY(yForceCallback).strength(yStrength), [yStrength]),
-    )
-    .force(
-      'collide',
-      useMemo(() => d3.forceCollide(collideRadius), [collideRadius]),
-    )
-    .force(
-      'axis',
-      useCallback(() => {
-        data.forEach(itemForceCallback);
-      }, [data, itemForceCallback]),
-    )
-    .stop()
-    .tick(ticks);
+}: ForceSimulationProps<Data>): ForceReadyData<Data>[] => {
+  const clonedData = useMemo<ForceReadyData<Data>[]>(
+    () =>
+      data.map(item =>
+        item.clone && typeof item.clone === 'function'
+          ? item.clone()
+          : { ...item },
+      ),
+    [data],
+  );
+
+  const simulation = useRef(
+    d3
+      .forceSimulation(clonedData)
+      .force(
+        'x',
+        useMemo(
+          () => d3.forceX(xForceCallback).strength(xStrength),
+          [xForceCallback, xStrength],
+        ),
+      )
+      .force(
+        'y',
+        useMemo(
+          () => d3.forceY(yForceCallback).strength(yStrength),
+          [yForceCallback, yStrength],
+        ),
+      )
+      .force(
+        'collide',
+        useMemo(() => d3.forceCollide(collideRadius), [collideRadius]),
+      )
+      .force(
+        'axis',
+        useCallback(() => {
+          (clonedData as ForceReadyData<Data>[]).forEach(itemForceCallback);
+        }, [clonedData, itemForceCallback]),
+      )
+      .stop()
+      .tick(ticks),
+  ).current;
+
+  const [simulationState, setSimulationState] =
+    useState<d3.Simulation<ForceReadyData<Data>, undefined>>(simulation);
+
+  simulation.on('tick', function () {
+    console.log('tick');
+    setSimulationState(this);
+  });
+
+  return simulationState.nodes();
 };
 
 export default useForceSimulation;
