@@ -14,6 +14,7 @@ interface PlayerCircleMarkerProps {
   player: TennisPlayer;
   cx: number;
   cy: number;
+  radius?: number;
   tooltipContainer?: HTMLElement;
 }
 
@@ -21,6 +22,7 @@ const PlayerCircleMarker = ({
   player,
   cx,
   cy,
+  radius = 4,
   tooltipContainer,
 }: PlayerCircleMarkerProps) => {
   const [hoverData, setHoverData] = useState<{
@@ -32,7 +34,7 @@ const PlayerCircleMarker = ({
     <circle
       cx={cx}
       cy={cy}
-      r={4}
+      r={radius}
       className={clsx(styles['marker'])}
       stroke="red"
       fill="orange"

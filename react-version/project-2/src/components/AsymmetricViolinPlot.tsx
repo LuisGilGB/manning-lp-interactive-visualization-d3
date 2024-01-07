@@ -37,6 +37,7 @@ const AsymmetricViolinPlot = <T,>({
   rightColor = 'black',
   numberMapper,
 }: AsymmetricViolinPlotProps<T>) => {
+  console.log('leftData', leftData);
   const leftMaxValue = d3Hooks.useMax(leftData, numberMapper);
   const rightMaxValue = d3Hooks.useMax(rightData, numberMapper);
   const maxValue = Math.max(leftMaxValue, rightMaxValue);
