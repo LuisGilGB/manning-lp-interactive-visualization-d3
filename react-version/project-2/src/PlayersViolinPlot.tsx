@@ -16,6 +16,12 @@ const VIOLIN_PLOT_MARGINS = {
   left: 80,
 };
 
+const LEGEND_OFFSET = 30;
+const LEGEND_RECT_WIDTH = 40;
+const LEGEND_RECT_HEIGHT = 20;
+const LEGEND_HORIZONTAL_GAP = 12;
+const LEGEND_VERTICAL_GAP = 8;
+
 const getEarnings = (player: TennisPlayer) => player.earningsUsd2019;
 
 interface PlayersViolinPlotProps {
@@ -79,6 +85,43 @@ const PlayersViolinPlot = ({
       areasFilter="url(#violin-glow)"
       numberMapper={getEarnings}
     >
+      <g
+        className="legend"
+        transform={`translate(${VIOLIN_PLOT_MARGINS.left + LEGEND_OFFSET}, ${
+          VIOLIN_PLOT_MARGINS.top + LEGEND_OFFSET
+        })`}
+      >
+        <rect
+          x={0}
+          y={0}
+          width={LEGEND_RECT_WIDTH}
+          height={LEGEND_RECT_HEIGHT}
+          fill="#A6BF4B"
+        />
+        <text
+          x={LEGEND_RECT_WIDTH + LEGEND_HORIZONTAL_GAP}
+          y={LEGEND_RECT_HEIGHT / 2}
+          alignmentBaseline="middle"
+          style={{ fontSize: '16px' }}
+        >
+          Women
+        </text>
+        <rect
+          x={0}
+          y={LEGEND_RECT_HEIGHT + LEGEND_VERTICAL_GAP}
+          width={LEGEND_RECT_WIDTH}
+          height={LEGEND_RECT_HEIGHT}
+          fill="#F2C53D"
+        />
+        <text
+          x={LEGEND_RECT_WIDTH + LEGEND_HORIZONTAL_GAP}
+          y={1.6 * LEGEND_RECT_HEIGHT + LEGEND_VERTICAL_GAP}
+          alignmentBaseline="middle"
+          style={{ fontSize: '16px' }}
+        >
+          Men
+        </text>
+      </g>
       {menMarkerData.map(player => (
         <PlayerCircleMarker
           key={player.name}
