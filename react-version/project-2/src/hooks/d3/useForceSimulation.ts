@@ -77,7 +77,6 @@ const useForceSimulation = <
     useState<d3.Simulation<ForceReadyData<Data>, undefined>>(simulation);
 
   simulation.on('tick', function () {
-    console.log('tick');
     setSimulationState(this);
   });
 
