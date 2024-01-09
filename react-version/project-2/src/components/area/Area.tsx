@@ -6,9 +6,17 @@ interface AreaProps {
   yScale: d3.ScaleLinear<number, number>;
   areaColor: string;
   transform?: string;
+  filter?: string;
 }
 
-const Area = ({ bins, xScale, yScale, areaColor, transform }: AreaProps) => {
+const Area = ({
+  bins,
+  xScale,
+  yScale,
+  areaColor,
+  transform,
+  filter,
+}: AreaProps) => {
   const areaFactory = d3
     .area()
     .x0(() => xScale(0))
@@ -23,6 +31,7 @@ const Area = ({ bins, xScale, yScale, areaColor, transform }: AreaProps) => {
       stroke="none"
       fillOpacity={0.75}
       transform={transform}
+      filter={filter}
     />
   );
 };

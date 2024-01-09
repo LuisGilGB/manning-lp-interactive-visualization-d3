@@ -76,6 +76,7 @@ const PlayersViolinPlot = ({
       margins={VIOLIN_PLOT_MARGINS}
       leftColor="#A6BF4B"
       rightColor="#F2C53D"
+      areasFilter="url(#violin-glow)"
       numberMapper={getEarnings}
     >
       {menMarkerData.map(player => (
@@ -88,6 +89,15 @@ const PlayersViolinPlot = ({
           tooltipContainer={tooltipContainer}
         />
       ))}
+      <defs>
+        <filter id="violin-glow">
+          <feGaussianBlur stdDeviation={3.5} result="coloredBlur" />
+          <feMerge>
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
     </AsymmetricViolinPlot>
   );
 };
