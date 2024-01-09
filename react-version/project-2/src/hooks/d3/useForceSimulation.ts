@@ -15,8 +15,8 @@ interface ForceSimulationProps<Data extends Record<string, unknown>> {
   yStrength: number;
   ticks: number;
   collideRadius?: number;
-  xForceCallback?: (item: ForceReadyData<Data>) => number;
-  yForceCallback?: (item: ForceReadyData<Data>) => number;
+  xForceParameter?: number | ((item: ForceReadyData<Data>) => number);
+  yForceParameter?: number | ((item: ForceReadyData<Data>) => number);
   itemForceCallback: (item: ForceReadyData<Data>) => void;
 }
 
@@ -28,8 +28,8 @@ const useForceSimulation = <
   yStrength,
   ticks,
   collideRadius = 5,
-  xForceCallback,
-  yForceCallback,
+  xForceParameter,
+  yForceParameter,
   itemForceCallback,
 }: ForceSimulationProps<Data>): ForceReadyData<Data>[] => {
   const clonedData = useMemo<ForceReadyData<Data>[]>(
@@ -48,15 +48,15 @@ const useForceSimulation = <
       .force(
         'x',
         useMemo(
-          () => d3.forceX(xForceCallback).strength(xStrength),
-          [xForceCallback, xStrength],
+          () => d3.forceX(xForceParameter).strength(xStrength),
+          [xForceParameter, xStrength],
         ),
       )
       .force(
         'y',
         useMemo(
-          () => d3.forceY(yForceCallback).strength(yStrength),
-          [yForceCallback, yStrength],
+          () => d3.forceY(yForceParameter).strength(yStrength),
+          [yForceParameter, yStrength],
         ),
       )
       .force(

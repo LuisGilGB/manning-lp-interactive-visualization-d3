@@ -47,11 +47,11 @@ const PlayersViolinPlot = ({
   const menMarkerData = d3Hooks.useForceSimulation<TennisPlayer>({
     data,
     xStrength: 0.1,
-    yStrength: 4,
-    ticks: 100,
+    yStrength: 10,
+    ticks: 300,
     collideRadius: MARKER_RADIUS + MARKER_PADDING,
-    xForceCallback: () => VIOLIN_PLOT_WIDTH / 2,
-    yForceCallback: item => yScale(item.earningsUsd2019),
+    xForceParameter: VIOLIN_PLOT_WIDTH / 2,
+    yForceParameter: item => yScale(item.earningsUsd2019),
     itemForceCallback: item => {
       // If man and the circle's x position is on the left side of the violin
       if (item.isMale() && item.x < VIOLIN_PLOT_WIDTH / 2 + MARKER_RADIUS) {
